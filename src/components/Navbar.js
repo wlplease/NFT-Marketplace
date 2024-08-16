@@ -37,20 +37,19 @@ function updateButton() {
 async function connectWebsite() {
 
     const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-    if(chainId !== '0x5')
+    if(chainId !== '0x2105')  // Base chain ID is '0x2105' (Base Mainnet)
     {
-      //alert('Incorrect network! Switch your metamask network to Rinkeby');
       await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: '0x5' }],
-     })
+        params: [{ chainId: '0x2105' }],  // Switch to Base Mainnet
+     });
     }  
     await window.ethereum.request({ method: 'eth_requestAccounts' })
       .then(() => {
         updateButton();
-        console.log("here");
+        console.log("Connected to Base chain");
         getAddress();
-        window.location.replace(location.pathname)
+        window.location.replace(location.pathname);
       });
 }
 
@@ -60,15 +59,15 @@ async function connectWebsite() {
     let val = window.ethereum.isConnected();
     if(val)
     {
-      console.log("here");
+      console.log("Already connected");
       getAddress();
       toggleConnect(val);
       updateButton();
     }
 
     window.ethereum.on('accountsChanged', function(accounts){
-      window.location.replace(location.pathname)
-    })
+      window.location.replace(location.pathname);
+    });
   });
 
     return (
@@ -124,6 +123,6 @@ async function connectWebsite() {
         </div>
       </div>
     );
-  }
+}
 
-  export default Navbar;
+export default Navbar;
