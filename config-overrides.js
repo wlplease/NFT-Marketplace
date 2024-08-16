@@ -3,10 +3,10 @@ const webpack = require('webpack');
 module.exports = function override(config) {
   // Add fallback for process, stream, and buffer modules
   config.resolve.fallback = {
-    ...config.resolve.fallback,
     process: require.resolve('process/browser'),
     stream: require.resolve('stream-browserify'),
-    buffer: require.resolve('buffer/')
+    buffer: require.resolve('buffer/'),
+    path: require.resolve('path-browserify')
   };
 
   // Add ProvidePlugin for process and Buffer
@@ -17,8 +17,12 @@ module.exports = function override(config) {
     })
   );
 
-  // Ensure .mjs files are resolved correctly
-  config.resolve.extensions.push('.mjs');
+  // Ensure .mjs files are handled correctly
+  config.module.rules.push({
+    test: /\.mjs$/,
+    include: /node_modules/,
+    type: "javascript/auto"
+  });
 
   return config;
 };
