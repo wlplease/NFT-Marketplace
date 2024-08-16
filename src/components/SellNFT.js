@@ -3,6 +3,7 @@ import { Alchemy, Network, Utils } from 'alchemy-sdk';
 import { parseUnits } from 'ethers';
 import { uploadFileToIPFS, uploadJSONToIPFS } from '../pinata';
 import { useLocation } from 'react-router';
+import 'process/browser.js';
 
 // Alchemy and Network setup for Base Chain mainnet
 const settings = {
