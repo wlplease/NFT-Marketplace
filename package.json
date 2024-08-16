@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": false,
   "dependencies": {
-    "@craco/craco": "^7.1.0",
     "alchemy-sdk": "^3.4.1",
     "axios": "^0.27.2",
     "buffer": "^6.0.3",
@@ -16,10 +15,10 @@
     "web-vitals": "^4.2.3"
   },
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
-    "test": "react-app-rewired test",
-    "eject": "react-scripts eject"
+    "start": "yarn react-scripts start",
+    "build": "yarn react-scripts build",
+    "test": "yarn react-scripts test",
+    "eject": "yarn react-scripts eject"
   },
   "browserslist": {
     "production": [
