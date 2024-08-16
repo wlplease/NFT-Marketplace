@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Alchemy, Network, Utils } from 'alchemy-sdk';
+import { parseUnits } from 'ethers';
 import { uploadFileToIPFS, uploadJSONToIPFS } from '../pinata';
 import { useLocation } from 'react-router';
 
 // Alchemy and Network setup for Base Chain mainnet
 const settings = {
     apiKey: "xyb5LoDZ_CuuiLCaMOOI5qhUiVxEM_dh",
-    network: Network.ETH_MAINNET, // Change this to the specific Base Chain network if supported
+    network: Network.ETH_MAINNET, // Update this if a specific Base Chain network is available
 };
 const alchemy = new Alchemy(settings);
 
@@ -81,29 +82,37 @@ export default function SellNFT() {
       disableButton();
       updateMessage("Uploading NFT (takes 5 mins).. please don't click anything!");
 
-      // Pull the deployed contract instance
-      const contract = new alchemy.Contract(contractAddress, contractABI, alchemy);
+      // Connect to MetaMask
+      if (typeof window.ethereum !== 'undefined') {
+        await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const signer = await provider.getSigner();
 
-      // Prepare parameters
-      const price = Utils.parseUnits(formParams.price, 'ether');
-      let listingPrice = await contract.getListPrice();
-      listingPrice = listingPrice.toString();
+        // Pull the deployed contract instance
+        const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-      // Create the NFT
-      const transaction = await contract.createToken(metadataURL, price, { value: listingPrice });
-      await transaction.wait();
+        // Prepare parameters
+        const price = ethers.utils.parseUnits(formParams.price, 'ether');
+        let listingPrice = await contract.getListPrice();
+        listingPrice = listingPrice.toString();
 
-      alert("Successfully listed your NFT!");
-      enableButton();
-      updateMessage("");
-      updateFormParams({ name: '', description: '', price: '' });
-      window.location.replace("/");
+        // Create the NFT
+        const transaction = await contract.createToken(metadataURL, price, { value: listingPrice });
+        await transaction.wait();
+
+        alert("Successfully listed your NFT!");
+        enableButton();
+        updateMessage("");
+        updateFormParams({ name: '', description: '', price: '' });
+        window.location.replace("/");
+      } else {
+        alert("MetaMask is not installed. Please install it to use this feature.");
+      }
     } catch (e) {
       alert("Upload error: " + e);
     }
   }
 
-  console.log("Working", process.env);
   return (
     <div className="">
       <Navbar />
