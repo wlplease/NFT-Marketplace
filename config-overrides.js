@@ -1,8 +1,9 @@
 const webpack = require('webpack');
 
 module.exports = function override(config) {
-  // Add fallback for process and buffer modules
+  // Add fallback for process, stream, and buffer modules
   config.resolve.fallback = {
+    ...config.resolve.fallback,
     process: require.resolve('process/browser'),
     stream: require.resolve('stream-browserify'),
     buffer: require.resolve('buffer/')
@@ -15,6 +16,9 @@ module.exports = function override(config) {
       Buffer: ['buffer', 'Buffer']
     })
   );
+
+  // Ensure .mjs files are resolved correctly
+  config.resolve.extensions.push('.mjs');
 
   return config;
 };
