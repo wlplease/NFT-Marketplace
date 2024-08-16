@@ -1,15 +1,20 @@
 const webpack = require('webpack');
 
-module.exports = function override(config, env) {
-    config.resolve.fallback = {
-        ...config.resolve.fallback,
-        "process/browser": require.resolve("process/browser"),
-    };
-    config.plugins = [
-        ...config.plugins,
-        new webpack.ProvidePlugin({
-            process: 'process/browser',
-        }),
-    ];
-    return config;
+module.exports = function override(config) {
+  // Provide fallback for 'process' and 'stream' modules
+  config.resolve.fallback = {
+    process: require.resolve('process/browser'),
+    stream: require.resolve('stream-browserify'),
+    buffer: require.resolve('buffer/')
+  };
+
+  // Provide global variables for process and Buffer
+  config.plugins.push(
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+      Buffer: ['buffer', 'Buffer']
+    })
+  );
+
+  return config;
 };
